@@ -1,5 +1,5 @@
 import { prefix } from './config.json'
-import { Client, Message } from 'discord.js'
+import { Client, Message, MessageEmbed } from 'discord.js'
 import { Player } from 'discord-player'
 
 import { msgEmbed } from './recyclable/msgembed'
@@ -54,10 +54,13 @@ client.on('message', async (message: Message) => {
 
     if (comand.startsWith(`${prefix}queue`) || comand.startsWith(`${prefix}q`)) {
         if (player.shuffle(message).tracks) {
+            const embed = new MessageEmbed()
+                .setColor('#2e86bb')
+                .setTitle('Queue')
             for (const track of player.getQueue(message).tracks) {
-                const embed = msgEmbed(track.url, track.title, track.description)
-                message.channel.send(embed)
+                embed.addField(track.title , track.description , false)
             }
+            message.channel.send(embed)
         }
     }
 
