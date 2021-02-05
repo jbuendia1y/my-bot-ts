@@ -1,14 +1,15 @@
 import { MessageEmbed } from 'discord.js'
 
-const msgEmbed = (url:string , title:string , color : any) => {
+const msgEmbed = (url:string , title:string, description:string) => {
 
     const embed = new MessageEmbed()
     
     embed.title = title
-    embed.color = color
+    embed.color = 0xff0000
     embed.url = url
+    embed.description = description
 
-    return embed
+    return <any>embed
 }
 
 export { msgEmbed }
