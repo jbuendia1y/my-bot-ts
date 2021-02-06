@@ -3,8 +3,10 @@ import { Command } from 'discord.js'
 const commandEx:Command = {
     name : 'ping',
     description : '?ping',
-    excute(message , args){
-        message.channel.send('pong')
+    excute(client , message){
+        if(message.content.startsWith('?ping')){
+            message.channel.send('pong')
+        }
     }
 }
 

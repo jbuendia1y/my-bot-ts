@@ -1,18 +1,26 @@
 import { prefix } from './config.json'
-import { Client, Message, MessageEmbed } from 'discord.js'
+import { Client, Message, Command } from 'discord.js'
 import { Player } from 'discord-player'
+
+import { readdirSync } from 'fs'
+import { join } from 'path'
 
 import { msgEmbed } from './recyclable/msgembed'
 
 const client: Client = new Client()
 const player = new Player(client)
 
-player
+client.player = player
+
+client.player
     .on('trackStart', (message, track) => {
         const title = `Now Playing ${track.title}`
         const embed = msgEmbed(track.url, title, track.description)
 
         message.channel.send(embed)
+            .then(newMSG => newMSG.delete({
+                timeout: 5000
+            }))
     })
     .on('trackAdd', (message, track) => {
         const song = track.tracks[track.tracks.length - 1]
@@ -22,9 +30,15 @@ player
     })
     .on('queueEnd', (message, track) => {
         message.channel.send(`Queue END - ${track.tracks.length - 1} songs`)
+            .then(newMSG => newMSG.delete({
+                timeout: 5000
+            }))
     })
     .on('botDisconnect', (message) => {
         message.channel.send('aaaaadios')
+            .then(newMSG => newMSG.delete({
+                timeout: 5000
+            }))
     })
     .on('error', (err, message) => {
         message.channel.send(err)
@@ -34,50 +48,14 @@ player
     })
 
 client.on('message', async (message: Message) => {
-    const comand = message.content.toLocaleLowerCase()
+    const files = readdirSync(join(__dirname, 'commands')).filter(file => file.endsWith('.js'))
 
-    if (comand.startsWith(`${prefix}play`)) {
-        const msg = message.content
-        if (message.member?.voice.channel) {
+    for (const file of files) {
+        const command: Command = require(`./commands/${file}`)
 
-            if (!msg.split(`${prefix}play`)[1]) {
-                return message.channel.send('SET A SONG')
-            }
-
-            const video = msg.split(`${prefix}play `)[1]
-            const name = video.replace(' ', '-')
-
-            return player.play(message, name, true)
+        if(message.content.startsWith(command.description) || message.content.startsWith(`${prefix}${command.name}`)){
+            command.excute(client, message)
         }
-        return message.channel.send('GO TO THE CHANNEL VOICE')
-    }
-
-    if (comand.startsWith(`${prefix}queue`) || comand.startsWith(`${prefix}q`)) {
-        if (player.shuffle(message).tracks) {
-            const embed = new MessageEmbed()
-                .setColor('#2e86bb')
-                .setTitle('Queue')
-            for (const track of player.getQueue(message).tracks) {
-                embed.addField(track.title , track.description , false)
-            }
-            message.channel.send(embed)
-        }
-    }
-
-    if (comand.startsWith(`${prefix}skip`)) {
-        player.skip(message)
-    }
-
-    if (comand.startsWith(`${prefix}leave`)) {
-        player.stop(message)
-    }
-
-    if (comand.startsWith(`${prefix}pause`)) {
-        player.pause(message)
-    }
-
-    if (comand.startsWith(`${prefix}resume`)) {
-        player.resume(message)
     }
 })
 
