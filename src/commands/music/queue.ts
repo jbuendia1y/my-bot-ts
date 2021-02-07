@@ -1,5 +1,5 @@
 import { Command, MessageEmbed } from "discord.js";
-import { prefix } from "../config.json";
+import { prefix } from "../../config.json";
 
 const command: Command = {
     name: 'queue',

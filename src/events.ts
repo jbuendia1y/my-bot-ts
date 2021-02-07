@@ -48,10 +48,10 @@ client.player
     })
 
 client.on('message', async (message: Message) => {
-    const files = readdirSync(join(__dirname, 'commands')).filter(file => file.endsWith('.js'))
+    const filesMusic = readdirSync(join(__dirname, 'commands' , 'music')).filter(file => file.endsWith('.js'))
 
-    for (const file of files) {
-        const command: Command = require(`./commands/${file}`)
+    for (const file of filesMusic) {
+        const command: Command = require(`./commands/music/${file}`)
 
         if(message.content.startsWith(command.description) || message.content.startsWith(`${prefix}${command.name}`)){
             command.excute(client, message)
