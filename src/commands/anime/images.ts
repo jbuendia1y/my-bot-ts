@@ -5,14 +5,15 @@ const gis = require('g-i-s')
 
 const command: Command = {
     name: 'img',
-    description: `${prefix}images`,
+    description: `${prefix}img`,
     excute(client, message) {
-        const args = message.content.slice(prefix.length).trim().split(' ');
-        const command = args.shift()?.toLowerCase();
-        if (args.length == 0) {
+        const args = message.content.split(`${prefix}img `);
+        const search = args[1]
+        console.log(search)
+        if (args.length == 1) {
             return message.channel.send('Please enter a argument')
         }
-        gis(args[0], (err: any, results: any) => {
+        gis(search, (err: any, results: any) => {
             if (err) {
                 return message.channel.send(err);
             }
