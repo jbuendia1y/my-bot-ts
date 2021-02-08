@@ -48,12 +48,24 @@ client.player
     })
 
 client.on('message', async (message: Message) => {
-    const filesMusic = readdirSync(join(__dirname, 'commands' , 'music')).filter(file => file.endsWith('.js'))
+    const filesMusic = readdirSync(join(__dirname, 'commands', 'music'))
+        .filter(file => file.endsWith('.js'))
 
     for (const file of filesMusic) {
         const command: Command = require(`./commands/music/${file}`)
 
-        if(message.content.startsWith(command.description) || message.content.startsWith(`${prefix}${command.name}`)){
+        if (message.content.startsWith(command.description) || message.content.startsWith(`${prefix}${command.name}`)) {
+            command.excute(client, message)
+        }
+    }
+
+    const filesAnime = readdirSync(join(__dirname, 'commands', 'anime'))
+        .filter(file => file.endsWith('.js'))
+
+    for(const file of filesAnime){
+        const command:Command = require(`./commands/anime/${file}`)
+
+        if (message.content.startsWith(command.description) || message.content.startsWith(`${prefix}${command.name}`)) {
             command.excute(client, message)
         }
     }
