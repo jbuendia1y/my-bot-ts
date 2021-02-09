@@ -9,7 +9,7 @@ const command: Command = {
     excute(client, message) {
         const args = message.content.split(`${prefix}img `);
         const search = args[1]
-        console.log(search)
+
         if (args.length == 1) {
             return message.channel.send('Please enter a argument')
         }
@@ -17,8 +17,8 @@ const command: Command = {
             if (err) {
                 return message.channel.send(err);
             }
-            const images = JSON.parse(JSON.stringify(results, null, '  '))
-            const n = Math.round(Math.random() * (10 - 0) + 0)
+            const images:any[] = JSON.parse(JSON.stringify(results, null, '  '))
+            const n = Math.round(Math.random() * ((images.length - 1) - 0) + 0)
             message.channel.send(images[n].url)
         })
     }
